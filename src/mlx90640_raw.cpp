@@ -19,8 +19,11 @@ void Mlx90640Raw::CheckConnection() {
 }
 
 bool Mlx90640Raw::CaptureFrame(std::array<uint16_t, kFrameWords>& frame) {
-    constexpr int kMaxPolls = 50;
-    constexpr auto kPollDelay = std::chrono::milliseconds(2);
+    // The MLX90640's default refresh rate after power-up can be as slow as
+    // 0.5 Hz (one frame every 2 seconds), so give it generous headroom
+    // rather than tuning this tightly to a specific configured rate.
+    constexpr int kMaxPolls = 600;
+    constexpr auto kPollDelay = std::chrono::milliseconds(5);
 
     for (int i = 0; i < kMaxPolls; ++i) {
         uint16_t status = 0;
