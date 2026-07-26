@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #if defined(__linux__)
+#include <linux/i2c.h>
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #endif
