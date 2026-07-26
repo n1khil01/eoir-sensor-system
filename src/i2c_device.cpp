@@ -35,17 +35,33 @@ I2CDevice::~I2CDevice() {
 
 void I2CDevice::ReadWords(uint16_t reg_addr, uint16_t* out, size_t count) {
 #if defined(__linux__)
+    // Issuing the register-address write and the data read as two separate
+    // read()/write() syscalls produces two separate I2C transactions with a
+    // full STOP condition between them. The MLX90640 needs a genuine
+    // repeated START (no STOP) between the address write and the burst
+    // read, or its output can re-latch to a stale buffer -- so this uses a
+    // single I2C_RDWR ioctl carrying both messages instead.
     uint8_t addr_buf[2] = {static_cast<uint8_t>(reg_addr >> 8),
                             static_cast<uint8_t>(reg_addr & 0xFF)};
-
-    if (write(fd_, addr_buf, 2) != 2) {
-        throw std::runtime_error("I2C write (register address) failed");
-    }
-
     std::vector<uint8_t> raw(count * 2);
-    ssize_t n = read(fd_, raw.data(), raw.size());
-    if (n < 0 || static_cast<size_t>(n) != raw.size()) {
-        throw std::runtime_error("I2C read (frame data) failed or short read");
+
+    i2c_msg msgs[2];
+    msgs[0].addr = address_;
+    msgs[0].flags = 0;
+    msgs[0].len = sizeof(addr_buf);
+    msgs[0].buf = addr_buf;
+
+    msgs[1].addr = address_;
+    msgs[1].flags = I2C_M_RD;
+    msgs[1].len = static_cast<uint16_t>(raw.size());
+    msgs[1].buf = raw.data();
+
+    i2c_rdwr_ioctl_data ioctl_data;
+    ioctl_data.msgs = msgs;
+    ioctl_data.nmsgs = 2;
+
+    if (ioctl(fd_, I2C_RDWR, &ioctl_data) < 0) {
+        throw std::runtime_error("I2C combined write/read transaction failed");
     }
 
     for (size_t i = 0; i < count; ++i) {
