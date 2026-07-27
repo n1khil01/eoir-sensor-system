@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 
 // Base interface for a frame-producing sensor. The MLX90640 driver is the
