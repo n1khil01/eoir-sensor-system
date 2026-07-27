@@ -1,6 +1,7 @@
 #include <array>
 #include <chrono>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -48,7 +49,18 @@ int main(int argc, char** argv) {
         std::array<uint16_t, ISensor::kFrameWords> frame{};
         FrameResult result;
 
+        // benchmarks/ is gitignored, so it never gets materialized by a
+        // fresh clone -- create it explicitly rather than silently
+        // failing to write the CSV.
+        std::filesystem::create_directories(
+            std::filesystem::path(timing_csv_path).parent_path());
+
         std::ofstream csv(timing_csv_path);
+        if (!csv.is_open()) {
+            throw std::runtime_error(
+                std::string("failed to open ") + timing_csv_path +
+                " for writing");
+        }
         csv << "frame,capture_us,process_us,total_us\n";
 
         std::vector<double> capture_us;
