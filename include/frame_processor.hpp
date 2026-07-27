@@ -28,4 +28,13 @@ public:
     // copied or heap-allocated on the hot path.
     void Process(const std::array<uint16_t, ISensor::kFrameWords>& frame,
                  FrameResult& out) const;
+
+    // Deliberately naive stand-in for the "first working version" this
+    // pipeline started from: it heap-allocates a copy of the pixel data
+    // and returns the result by value instead of writing through a
+    // preallocated reference. Kept only so the Week 3 processing-cost
+    // metric has a real baseline to diff against -- do not call this on
+    // the hot path.
+    FrameResult ProcessNaive(
+        const std::array<uint16_t, ISensor::kFrameWords>& frame) const;
 };

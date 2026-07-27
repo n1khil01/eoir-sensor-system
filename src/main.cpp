@@ -1,5 +1,6 @@
 #include <array>
 #include <chrono>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -16,11 +17,20 @@ constexpr int kNumTimedFrames = 1000;
 // period is the per-frame budget the single-threaded loop is measured
 // against.
 constexpr double kFrameBudgetUs = 500'000.0;
-constexpr const char* kTimingCsvPath = "benchmarks/week3_frame_timing.csv";
 }  // namespace
 
-int main() {
-    std::cout << "EOIR sensor system - Week 3 single-threaded capture-to-process pipeline\n";
+int main(int argc, char** argv) {
+    // --naive re-runs the loop through FrameProcessor::ProcessNaive, the
+    // deliberately unoptimized per-frame-allocation baseline, so its CSV
+    // can be diffed against the default optimized run for the Week 3
+    // "reduced processing cost vs. first version" metric.
+    bool naive = argc > 1 && std::strcmp(argv[1], "--naive") == 0;
+    const char* timing_csv_path = naive
+        ? "benchmarks/week3_frame_timing_naive.csv"
+        : "benchmarks/week3_frame_timing.csv";
+
+    std::cout << "EOIR sensor system - Week 3 single-threaded capture-to-process pipeline"
+              << (naive ? " (naive baseline)\n" : "\n");
 
     try {
         // ISensor is the base interface (polymorphism); Mlx90640Raw is the
@@ -38,7 +48,7 @@ int main() {
         std::array<uint16_t, ISensor::kFrameWords> frame{};
         FrameResult result;
 
-        std::ofstream csv(kTimingCsvPath);
+        std::ofstream csv(timing_csv_path);
         csv << "frame,capture_us,process_us,total_us\n";
 
         std::vector<double> capture_us;
@@ -58,7 +68,11 @@ int main() {
                 continue;
             }
 
-            processor.Process(frame, result);
+            if (naive) {
+                result = processor.ProcessNaive(frame);
+            } else {
+                processor.Process(frame, result);
+            }
             auto process_end = std::chrono::steady_clock::now();
 
             double c_us = std::chrono::duration<double, std::micro>(
@@ -102,7 +116,7 @@ int main() {
                   << "us (2 Hz) budget: "
                   << (100.0 * total_stats.p99_us / kFrameBudgetUs)
                   << "% of budget consumed.\n";
-        std::cout << "Raw per-frame timings written to " << kTimingCsvPath
+        std::cout << "Raw per-frame timings written to " << timing_csv_path
                   << "\n";
 
         return failures == 0 ? 0 : 1;
