@@ -33,15 +33,23 @@ int main() {
         for (int i = 0; i < kNumTestReads; ++i) {
             if (sensor.CaptureFrame(frame)) {
                 ++successes;
+                // Pixel words are signed 16-bit two's complement counts on
+                // the wire; reading them as uint16_t wraps small negative
+                // values up near 65535, so reinterpret before reporting.
+                int16_t center_signed = static_cast<int16_t>(frame[kCenterPixelIndex]);
                 center_pixel_values.insert(frame[kCenterPixelIndex]);
                 if (i == 0 || i == kNumTestReads - 1) {
-                    auto [min_it, max_it] = std::minmax_element(frame.begin(), frame.end());
-                    std::cout << "  frame " << i << ": min=" << *min_it
-                              << " max=" << *max_it
-                              << " center=" << frame[kCenterPixelIndex] << "\n";
+                    auto [min_it, max_it] = std::minmax_element(
+                        frame.begin(), frame.end(), [](uint16_t a, uint16_t b) {
+                            return static_cast<int16_t>(a) < static_cast<int16_t>(b);
+                        });
+                    std::cout << "  frame " << i
+                              << ": min=" << static_cast<int16_t>(*min_it)
+                              << " max=" << static_cast<int16_t>(*max_it)
+                              << " center=" << center_signed << "\n";
                 } else if (i % 10 == 0) {
                     std::cout << "  frame " << i
-                              << ": center=" << frame[kCenterPixelIndex] << "\n";
+                              << ": center=" << center_signed << "\n";
                 }
             } else {
                 ++failures;
