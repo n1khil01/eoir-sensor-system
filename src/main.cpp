@@ -1,74 +1,110 @@
-#include <algorithm>
 #include <array>
+#include <chrono>
+#include <fstream>
 #include <iostream>
-#include <unordered_set>
+#include <memory>
+#include <vector>
 
+#include "frame_processor.hpp"
 #include "mlx90640_raw.hpp"
+#include "sensor_interface.hpp"
+#include "timing_stats.hpp"
 
 namespace {
-constexpr int kNumTestReads = 100;
-// Roughly the center of the 32x24 pixel grid, used as a liveliness probe:
-// its raw value should change frame to frame as the scene changes (e.g.
-// waving a hand near the sensor), unlike a stuck/cached read.
-constexpr size_t kCenterPixelIndex = 12 * 32 + 16;
-// The first 768 words of the frame are actual pixel data (32 x 24); the
-// remaining words are auxiliary/control data (PTAT, gain, subpage, etc.)
-// with unrelated scale, so min/max must be scanned over pixels only.
-constexpr size_t kNumPixels = 32 * 24;
-}
+constexpr int kNumTimedFrames = 1000;
+// MLX90640 default refresh rate is 2 Hz, i.e. a 500 ms frame period; that
+// period is the per-frame budget the single-threaded loop is measured
+// against.
+constexpr double kFrameBudgetUs = 500'000.0;
+constexpr const char* kTimingCsvPath = "benchmarks/week3_frame_timing.csv";
+}  // namespace
 
 int main() {
-    std::cout << "EOIR sensor system - Week 2 Sesnor Communication Test\n";
+    std::cout << "EOIR sensor system - Week 3 single-threaded capture-to-process pipeline\n";
 
     try {
-        Mlx90640Raw sensor("/dev/i2c-1");
-        sensor.CheckConnection();
+        // ISensor is the base interface (polymorphism); Mlx90640Raw is the
+        // concrete derived sensor. The pipeline below only ever talks to
+        // the base pointer.
+        std::unique_ptr<ISensor> sensor =
+            std::make_unique<Mlx90640Raw>("/dev/i2c-1");
+        sensor->CheckConnection();
         std::cout << "MLX90640 responded on the I2C bus.\n";
 
-        int successes = 0;
+        FrameProcessor processor;
+
+        // Preallocated once, outside the loop, and passed by reference on
+        // every iteration so the timed pipeline never allocates per frame.
+        std::array<uint16_t, ISensor::kFrameWords> frame{};
+        FrameResult result;
+
+        std::ofstream csv(kTimingCsvPath);
+        csv << "frame,capture_us,process_us,total_us\n";
+
+        std::vector<double> capture_us;
+        std::vector<double> process_us;
+        std::vector<double> total_us;
+        capture_us.reserve(kNumTimedFrames);
+        process_us.reserve(kNumTimedFrames);
+        total_us.reserve(kNumTimedFrames);
+
         int failures = 0;
-        std::array<uint16_t, Mlx90640Raw::kFrameWords> frame{};
-        std::unordered_set<uint16_t> center_pixel_values;
-
-        std::cout << "Watching the center pixel (index " << kCenterPixelIndex
-                  << ") across frames -- move a warm object (e.g. your hand) "
-                     "near the sensor and the value should change.\n";
-
-        for (int i = 0; i < kNumTestReads; ++i) {
-            if (sensor.CaptureFrame(frame)) {
-                ++successes;
-                // Pixel words are signed 16-bit two's complement counts on
-                // the wire; reading them as uint16_t wraps small negative
-                // values up near 65535, so reinterpret before reporting.
-                int16_t center_signed = static_cast<int16_t>(frame[kCenterPixelIndex]);
-                center_pixel_values.insert(frame[kCenterPixelIndex]);
-                if (i == 0 || i == kNumTestReads - 1) {
-                    auto [min_it, max_it] = std::minmax_element(
-                        frame.begin(), frame.begin() + kNumPixels,
-                        [](uint16_t a, uint16_t b) {
-                            return static_cast<int16_t>(a) < static_cast<int16_t>(b);
-                        });
-                    std::cout << "  frame " << i
-                              << ": min=" << static_cast<int16_t>(*min_it)
-                              << " max=" << static_cast<int16_t>(*max_it)
-                              << " center=" << center_signed << "\n";
-                } else if (i % 10 == 0) {
-                    std::cout << "  frame " << i
-                              << ": center=" << center_signed << "\n";
-                }
-            } else {
+        for (int i = 0; i < kNumTimedFrames; ++i) {
+            auto capture_start = std::chrono::steady_clock::now();
+            bool ok = sensor->CaptureFrame(frame);
+            auto capture_end = std::chrono::steady_clock::now();
+            if (!ok) {
                 ++failures;
-                std::cout << "  frame " << i << ": timed out waiting for new data\n";
+                continue;
+            }
+
+            processor.Process(frame, result);
+            auto process_end = std::chrono::steady_clock::now();
+
+            double c_us = std::chrono::duration<double, std::micro>(
+                              capture_end - capture_start)
+                              .count();
+            double p_us = std::chrono::duration<double, std::micro>(
+                              process_end - capture_end)
+                              .count();
+            double t_us = c_us + p_us;
+
+            capture_us.push_back(c_us);
+            process_us.push_back(p_us);
+            total_us.push_back(t_us);
+            csv << i << "," << c_us << "," << p_us << "," << t_us << "\n";
+
+            if (i % 100 == 0) {
+                std::cout << "  frame " << i << ": capture=" << c_us
+                          << "us process=" << p_us << "us total=" << t_us
+                          << "us\n";
             }
         }
+        csv.close();
 
-        std::cout << "Result: " << successes << " successful reads, " << failures
-                   << " failures out of " << kNumTestReads << ".\n";
-        std::cout << "Center pixel took " << center_pixel_values.size()
-                   << " distinct value(s) across the run"
-                   << (center_pixel_values.size() > 1
-                           ? " -- sensor is live.\n"
-                           : " -- suspicious if the scene wasn't static.\n");
+        LatencyStats capture_stats = ComputeLatencyStats(capture_us);
+        LatencyStats process_stats = ComputeLatencyStats(process_us);
+        LatencyStats total_stats = ComputeLatencyStats(total_us);
+
+        std::cout << "\nResult: " << (kNumTimedFrames - failures)
+                  << " timed frames, " << failures << " failures out of "
+                  << kNumTimedFrames << ".\n";
+        std::cout << "Capture   (us): mean=" << capture_stats.mean_us
+                  << " p95=" << capture_stats.p95_us
+                  << " p99=" << capture_stats.p99_us << "\n";
+        std::cout << "Process   (us): mean=" << process_stats.mean_us
+                  << " p95=" << process_stats.p95_us
+                  << " p99=" << process_stats.p99_us << "\n";
+        std::cout << "Total     (us): mean=" << total_stats.mean_us
+                  << " p95=" << total_stats.p95_us
+                  << " p99=" << total_stats.p99_us << "\n";
+        std::cout << "Headroom at p99 against " << kFrameBudgetUs
+                  << "us (2 Hz) budget: "
+                  << (100.0 * total_stats.p99_us / kFrameBudgetUs)
+                  << "% of budget consumed.\n";
+        std::cout << "Raw per-frame timings written to " << kTimingCsvPath
+                  << "\n";
+
         return failures == 0 ? 0 : 1;
     } catch (const std::exception& e) {
         std::cerr << "Sensor communication failed: " << e.what() << "\n";

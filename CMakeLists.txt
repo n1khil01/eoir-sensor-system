@@ -8,5 +8,6 @@ add_executable(eoir_sensor_system
     src/main.cpp
     src/i2c_device.cpp
     src/mlx90640_raw.cpp
+    src/frame_processor.cpp
 )
 target_include_directories(eoir_sensor_system PRIVATE include)
