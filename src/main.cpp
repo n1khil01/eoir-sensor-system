@@ -11,6 +11,10 @@ constexpr int kNumTestReads = 100;
 // its raw value should change frame to frame as the scene changes (e.g.
 // waving a hand near the sensor), unlike a stuck/cached read.
 constexpr size_t kCenterPixelIndex = 12 * 32 + 16;
+// The first 768 words of the frame are actual pixel data (32 x 24); the
+// remaining words are auxiliary/control data (PTAT, gain, subpage, etc.)
+// with unrelated scale, so min/max must be scanned over pixels only.
+constexpr size_t kNumPixels = 32 * 24;
 }
 
 int main() {
@@ -40,7 +44,8 @@ int main() {
                 center_pixel_values.insert(frame[kCenterPixelIndex]);
                 if (i == 0 || i == kNumTestReads - 1) {
                     auto [min_it, max_it] = std::minmax_element(
-                        frame.begin(), frame.end(), [](uint16_t a, uint16_t b) {
+                        frame.begin(), frame.begin() + kNumPixels,
+                        [](uint16_t a, uint16_t b) {
                             return static_cast<int16_t>(a) < static_cast<int16_t>(b);
                         });
                     std::cout << "  frame " << i
