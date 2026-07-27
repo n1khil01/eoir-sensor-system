@@ -18,7 +18,7 @@ constexpr size_t kNumPixels = 32 * 24;
 }
 
 int main() {
-    std::cout << "EOIR sensor system - Week 2 sensor communication test\n";
+    std::cout << "EOIR sensor system - Week 2 Sesnor Communication Test\n";
 
     try {
         Mlx90640Raw sensor("/dev/i2c-1");
