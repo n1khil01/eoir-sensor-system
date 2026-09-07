@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <thread>
 #include <vector>
 
 #include "frame_processor.hpp"
@@ -26,6 +27,7 @@ int main(int argc, char** argv) {
     // can be diffed against the default optimized run for the Week 3
     // "reduced processing cost vs. first version" metric.
     bool naive = argc > 1 && std::strcmp(argv[1], "--naive") == 0;
+    bool live = argc > 1 && std::strcmp(argv[1], "--live") == 0;
     const char* timing_csv_path = naive
         ? "benchmarks/week3_frame_timing_naive.csv"
         : "benchmarks/week3_frame_timing.csv";
@@ -48,6 +50,31 @@ int main(int argc, char** argv) {
         // every iteration so the timed pipeline never allocates per frame.
         std::array<uint16_t, ISensor::kFrameWords> frame{};
         FrameResult result;
+
+        // --live is an ad hoc manual test, not a timed benchmark: capture
+        // and print continuously at the sensor's own cadence so waving a
+        // hand in front of it is visible in the terminal immediately.
+        if (live) {
+            std::cout << "Live mode: printing min/max/mean and detection "
+                          "flag at each frame. Ctrl+C to stop.\n";
+            while (true) {
+                bool ok = sensor->CaptureFrame(frame);
+                if (!ok) {
+                    std::cout << "  capture failed\n";
+                } else {
+                    processor.Process(frame, result);
+                    std::cout << "min=" << result.min_value
+                              << " max=" << result.max_value
+                              << " mean=" << result.mean_value
+                              << " heat_signature_detected="
+                              << (result.heat_signature_detected ? "true"
+                                                                  : "false")
+                              << "\n";
+                }
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(500));
+            }
+        }
 
         // benchmarks/ is gitignored, so it never gets materialized by a
         // fresh clone -- create it explicitly rather than silently
