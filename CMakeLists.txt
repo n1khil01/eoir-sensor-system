@@ -19,8 +19,17 @@ target_link_libraries(eoir_sensor_system PRIVATE Threads::Threads)
 # libcalls (__atomic_fetch_add_8, __atomic_load_8, ...) for std::atomic<T>
 # ops on 8-byte types instead of inlining lock-free instructions. Link
 # libatomic to provide those; it's a no-op on platforms that don't need it.
-include(CheckLibraryExists)
-check_library_exists(atomic __atomic_fetch_add_8 "" HAVE_LIBATOMIC)
+# Probed with the CXX compiler (not check_library_exists, which drives the C
+# compiler and can misfire on a CXX-only project) so the test matches how
+# main.cpp is actually compiled and linked.
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_LIBRARIES atomic)
+check_cxx_source_compiles("
+#include <atomic>
+std::atomic<uint64_t> v{0};
+int main() { v.fetch_add(1); return static_cast<int>(v.load()); }
+" HAVE_LIBATOMIC)
+unset(CMAKE_REQUIRED_LIBRARIES)
 if(HAVE_LIBATOMIC)
     target_link_libraries(eoir_sensor_system PRIVATE atomic)
 endif()
