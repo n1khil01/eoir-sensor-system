@@ -1,5 +1,7 @@
 #include <array>
+#include <atomic>
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -10,6 +12,8 @@
 
 #include "frame_processor.hpp"
 #include "mlx90640_raw.hpp"
+#include "ring_buffer.hpp"
+#include "rss_sampler.hpp"
 #include "sensor_interface.hpp"
 #include "timing_stats.hpp"
 
@@ -19,6 +23,113 @@ constexpr int kNumTimedFrames = 1000;
 // period is the per-frame budget the single-threaded loop is measured
 // against.
 constexpr double kFrameBudgetUs = 500'000.0;
+
+using Frame = std::array<uint16_t, ISensor::kFrameWords>;
+
+// Week 3's p99 total per-frame time was well under the ~500ms sensor
+// period, so the processing side is never the bottleneck; a handful of
+// slots is enough to absorb normal scheduling jitter between the capture
+// and process threads without the buffer ever running deep. Sized generously
+// relative to that measured headroom rather than guessed.
+constexpr size_t kRingBufferCapacity = 8;
+
+int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
+    std::cout << "EOIR sensor system - Week 4 multithreaded pipeline "
+                 "(capture thread -> ring buffer -> process thread)\n";
+    std::cout << "Running for " << duration_seconds << "s...\n";
+
+    RingBuffer<Frame, kRingBufferCapacity> ring;
+    FrameProcessor processor;
+
+    std::atomic<bool> stop{false};
+    std::atomic<uint64_t> frames_captured{0};
+    std::atomic<uint64_t> frames_processed{0};
+    std::atomic<uint64_t> capture_failures{0};
+
+    // Only the capture thread writes push_block_us and only the process
+    // thread writes process_us, so neither vector needs its own lock.
+    std::vector<double> push_block_us;
+    std::vector<double> process_us;
+    push_block_us.reserve(100000);
+    process_us.reserve(100000);
+
+    std::filesystem::create_directories("benchmarks");
+    std::ofstream rss_csv("benchmarks/week4_rss_samples.csv");
+    rss_csv << "elapsed_s,rss_kb,frames_captured,frames_processed,"
+               "ring_overflow_count\n";
+
+    std::thread capture_thread([&] {
+        Frame frame{};
+        while (!stop.load(std::memory_order_relaxed)) {
+            bool ok = sensor->CaptureFrame(frame);
+            if (!ok) {
+                capture_failures.fetch_add(1, std::memory_order_relaxed);
+                continue;
+            }
+            double block_us = ring.Push(frame);
+            push_block_us.push_back(block_us);
+            frames_captured.fetch_add(1, std::memory_order_relaxed);
+        }
+    });
+
+    std::thread process_thread([&] {
+        FrameResult result;
+        while (!stop.load(std::memory_order_relaxed) || ring.Size() > 0) {
+            Frame frame = ring.Pop();
+            auto start = std::chrono::steady_clock::now();
+            processor.Process(frame, result);
+            auto end = std::chrono::steady_clock::now();
+            process_us.push_back(
+                std::chrono::duration<double, std::micro>(end - start)
+                    .count());
+            frames_processed.fetch_add(1, std::memory_order_relaxed);
+        }
+    });
+
+    auto run_start = std::chrono::steady_clock::now();
+    int elapsed_s = 0;
+    while (elapsed_s < duration_seconds) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        ++elapsed_s;
+        rss_csv << elapsed_s << "," << CurrentRssKb() << ","
+                << frames_captured.load() << "," << frames_processed.load()
+                << "," << ring.overflow_count() << "\n";
+        rss_csv.flush();
+    }
+
+    stop.store(true, std::memory_order_relaxed);
+    // Processing thread blocks in ring.Pop() on an empty buffer; push one
+    // more no-op wake so it can observe `stop` and exit its wait predicate.
+    ring.Push(Frame{});
+    capture_thread.join();
+    process_thread.join();
+
+    double actual_seconds = std::chrono::duration<double>(
+                                 std::chrono::steady_clock::now() - run_start)
+                                 .count();
+
+    LatencyStats block_stats = ComputeLatencyStats(push_block_us);
+    LatencyStats process_stats = ComputeLatencyStats(process_us);
+
+    double fps = static_cast<double>(frames_processed.load()) / actual_seconds;
+
+    std::cout << "\nResult after " << actual_seconds << "s:\n";
+    std::cout << "  frames captured:  " << frames_captured.load() << "\n";
+    std::cout << "  frames processed: " << frames_processed.load() << "\n";
+    std::cout << "  capture failures: " << capture_failures.load() << "\n";
+    std::cout << "  sustained throughput: " << fps << " fps\n";
+    std::cout << "  ring buffer overflow count (producer outran consumer): "
+              << ring.overflow_count() << "\n";
+    std::cout << "  producer critical-section time (us): mean="
+              << block_stats.mean_us << " p95=" << block_stats.p95_us
+              << " p99=" << block_stats.p99_us << "\n";
+    std::cout << "  process stage (us): mean=" << process_stats.mean_us
+              << " p95=" << process_stats.p95_us
+              << " p99=" << process_stats.p99_us << "\n";
+    std::cout << "  RSS samples written to benchmarks/week4_rss_samples.csv\n";
+
+    return 0;
+}
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -28,6 +139,11 @@ int main(int argc, char** argv) {
     // "reduced processing cost vs. first version" metric.
     bool naive = argc > 1 && std::strcmp(argv[1], "--naive") == 0;
     bool live = argc > 1 && std::strcmp(argv[1], "--live") == 0;
+    bool threaded = argc > 1 && std::strcmp(argv[1], "--threaded") == 0;
+    int threaded_duration_s = 600;  // 10-minute soak run by default
+    if (threaded && argc > 2) {
+        threaded_duration_s = std::atoi(argv[2]);
+    }
     const char* timing_csv_path = naive
         ? "benchmarks/week3_frame_timing_naive.csv"
         : "benchmarks/week3_frame_timing.csv";
@@ -43,6 +159,10 @@ int main(int argc, char** argv) {
             std::make_unique<Mlx90640Raw>("/dev/i2c-1");
         sensor->CheckConnection();
         std::cout << "MLX90640 responded on the I2C bus.\n";
+
+        if (threaded) {
+            return RunThreaded(std::move(sensor), threaded_duration_s);
+        }
 
         FrameProcessor processor;
 
