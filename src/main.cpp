@@ -10,11 +10,13 @@
 #include <thread>
 #include <vector>
 
+#include "detection_event.hpp"
 #include "frame_processor.hpp"
 #include "mlx90640_raw.hpp"
 #include "ring_buffer.hpp"
 #include "rss_sampler.hpp"
 #include "sensor_interface.hpp"
+#include "tcp_server.hpp"
 #include "timing_stats.hpp"
 
 namespace {
@@ -34,14 +36,21 @@ using Frame = std::array<uint16_t, ISensor::kFrameWords>;
 // and process threads without the buffer ever running deep. Sized generously
 // relative to that measured headroom rather than guessed.
 constexpr size_t kRingBufferCapacity = 8;
+constexpr uint16_t kDetectionServerPort = 5050;
 
-int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
-    std::cout << "EOIR sensor system - Week 4 multithreaded pipeline "
-                 "(capture thread -> ring buffer -> process thread)\n";
-    std::cout << "Running for " << duration_seconds << "s...\n";
+int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds,
+                uint16_t port) {
+    std::cout << "EOIR sensor system - Week 5 pipeline (capture thread -> "
+                 "ring buffer -> process thread -> TCP detection stream)\n";
+    std::cout << "Running for " << duration_seconds << "s, detection events "
+                 "on port " << port << "...\n";
 
     RingBuffer<Frame, kRingBufferCapacity> ring;
     FrameProcessor processor;
+
+    DetectionEventServer event_server(port);
+    event_server.Start();
+    std::atomic<uint64_t> events_published{0};
 
     std::atomic<bool> stop{false};
     std::atomic<uint64_t> frames_captured{0};
@@ -76,6 +85,7 @@ int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
 
     std::thread process_thread([&] {
         FrameResult result;
+        uint64_t sequence = 0;
         while (!stop.load(std::memory_order_relaxed) || ring.Size() > 0) {
             Frame frame = ring.Pop();
             auto start = std::chrono::steady_clock::now();
@@ -85,6 +95,25 @@ int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
                 std::chrono::duration<double, std::micro>(end - start)
                     .count());
             frames_processed.fetch_add(1, std::memory_order_relaxed);
+
+            // Every processed frame becomes a detection event (not only
+            // positive detections) -- clients get a continuous stream and
+            // `heat_signature_detected` tells them which ones matter. This
+            // is what gives the Week 5 latency/sequence metrics enough
+            // volume to measure without waiting on a real heat signature
+            // to occur during the run.
+            DetectionEvent event;
+            event.sequence = sequence++;
+            event.timestamp_ns = std::chrono::duration_cast<
+                                      std::chrono::nanoseconds>(
+                                      end.time_since_epoch())
+                                      .count();
+            event.min_value = result.min_value;
+            event.max_value = result.max_value;
+            event.mean_value = result.mean_value;
+            event.heat_signature_detected = result.heat_signature_detected;
+            event_server.PublishEvent(event);
+            events_published.fetch_add(1, std::memory_order_relaxed);
         }
     });
 
@@ -105,6 +134,7 @@ int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
     ring.Push(Frame{});
     capture_thread.join();
     process_thread.join();
+    event_server.Stop();
 
     double actual_seconds = std::chrono::duration<double>(
                                  std::chrono::steady_clock::now() - run_start)
@@ -129,6 +159,8 @@ int RunThreaded(std::unique_ptr<ISensor> sensor, int duration_seconds) {
               << " p95=" << process_stats.p95_us
               << " p99=" << process_stats.p99_us << "\n";
     std::cout << "  RSS samples written to benchmarks/week4_rss_samples.csv\n";
+    std::cout << "  detection events published: " << events_published.load()
+               << "\n";
 
     return 0;
 }
@@ -143,8 +175,12 @@ int main(int argc, char** argv) {
     bool live = argc > 1 && std::strcmp(argv[1], "--live") == 0;
     bool threaded = argc > 1 && std::strcmp(argv[1], "--threaded") == 0;
     int threaded_duration_s = 600;  // 10-minute soak run by default
+    uint16_t threaded_port = kDetectionServerPort;
     if (threaded && argc > 2) {
         threaded_duration_s = std::atoi(argv[2]);
+    }
+    if (threaded && argc > 3) {
+        threaded_port = static_cast<uint16_t>(std::atoi(argv[3]));
     }
     const char* timing_csv_path = naive
         ? "benchmarks/week3_frame_timing_naive.csv"
@@ -163,7 +199,8 @@ int main(int argc, char** argv) {
         std::cout << "MLX90640 responded on the I2C bus.\n";
 
         if (threaded) {
-            return RunThreaded(std::move(sensor), threaded_duration_s);
+            return RunThreaded(std::move(sensor), threaded_duration_s,
+                                threaded_port);
         }
 
         FrameProcessor processor;

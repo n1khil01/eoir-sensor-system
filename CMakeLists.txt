@@ -11,6 +11,7 @@ add_executable(eoir_sensor_system
     src/i2c_device.cpp
     src/mlx90640_raw.cpp
     src/frame_processor.cpp
+    src/tcp_server.cpp
 )
 target_include_directories(eoir_sensor_system PRIVATE include)
 target_link_libraries(eoir_sensor_system PRIVATE Threads::Threads)
