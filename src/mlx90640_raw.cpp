@@ -3,8 +3,20 @@
 #include <chrono>
 #include <thread>
 
-Mlx90640Raw::Mlx90640Raw(const std::string& bus_path, uint8_t address)
-    : device_(bus_path, address) {}
+Mlx90640Raw::Mlx90640Raw(const std::string& bus_path, uint8_t address,
+                          RefreshRate refresh_rate)
+    : device_(bus_path, address) {
+    SetRefreshRate(refresh_rate);
+}
+
+void Mlx90640Raw::SetRefreshRate(RefreshRate rate) {
+    uint16_t control_value = 0;
+    device_.ReadWords(kControlReg, &control_value, 1);
+    uint16_t rate_bits =
+        static_cast<uint16_t>(static_cast<uint8_t>(rate) & 0x07) << 7;
+    control_value = (control_value & kRefreshRateMask) | rate_bits;
+    device_.WriteWord(kControlReg, control_value);
+}
 
 void Mlx90640Raw::CheckConnection() {
     uint16_t control_value = 0;

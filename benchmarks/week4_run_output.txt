@@ -1,0 +1,14 @@
+EOIR sensor system - Week 3 single-threaded capture-to-process pipeline
+MLX90640 responded on the I2C bus.
+EOIR sensor system - Week 4 multithreaded pipeline (capture thread -> ring buffer -> process thread)
+Running for 600s...
+
+Result after 600.434s:
+  frames captured:  1177
+  frames processed: 1177
+  capture failures: 0
+  sustained throughput: 1.96025 fps
+  ring buffer overflow count (producer outran consumer): 0
+  producer critical-section time (us): mean=30.2756 p95=46.094 p99=55.729
+  process stage (us): mean=163.61 p95=185.73 p99=220.312
+  RSS samples written to benchmarks/week4_rss_samples.csv

@@ -19,10 +19,12 @@
 
 namespace {
 constexpr int kNumTimedFrames = 1000;
-// MLX90640 default refresh rate is 2 Hz, i.e. a 500 ms frame period; that
-// period is the per-frame budget the single-threaded loop is measured
-// against.
-constexpr double kFrameBudgetUs = 500'000.0;
+// Mlx90640Raw now configures the sensor for 8 Hz on construction (see
+// mlx90640_raw.hpp) instead of running at its 2 Hz power-on default, so a
+// 125 ms frame period is the per-frame budget the pipeline is measured
+// against. This requires the I2C bus running at fast mode (400kHz) or
+// faster -- see the RefreshRate comment in mlx90640_raw.hpp.
+constexpr double kFrameBudgetUs = 125'000.0;
 
 using Frame = std::array<uint16_t, ISensor::kFrameWords>;
 

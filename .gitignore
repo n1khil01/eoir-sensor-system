@@ -69,7 +69,6 @@ Testing/
 .cache/
 
 cmd.txt
-benchmarks/
 docs/
 .claude
 CLAUDE.md
