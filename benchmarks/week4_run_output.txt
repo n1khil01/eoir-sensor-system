@@ -3,12 +3,12 @@ MLX90640 responded on the I2C bus.
 EOIR sensor system - Week 4 multithreaded pipeline (capture thread -> ring buffer -> process thread)
 Running for 600s...
 
-Result after 600.434s:
-  frames captured:  1177
-  frames processed: 1177
+Result after 600.58s:
+  frames captured:  2351
+  frames processed: 2351
   capture failures: 0
-  sustained throughput: 1.96025 fps
+  sustained throughput: 3.91455 fps
   ring buffer overflow count (producer outran consumer): 0
-  producer critical-section time (us): mean=30.2756 p95=46.094 p99=55.729
-  process stage (us): mean=163.61 p95=185.73 p99=220.312
+  producer critical-section time (us): mean=26.7568 p95=42.656 p99=54.375
+  process stage (us): mean=165.199 p95=187.604 p99=225.306
   RSS samples written to benchmarks/week4_rss_samples.csv
