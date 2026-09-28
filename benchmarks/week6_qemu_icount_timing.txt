@@ -1,0 +1,22 @@
+		-kernel build/rtos_week6.elf -monitor none -nographic -serial stdio \
+		|| true
+
+eoir-sensor-system: Week 6 FreeRTOS module booting (QEMU mps2-an385)
+
+=== eoir-sensor-system Week 6 FreeRTOS results ===
+TIMER0 period target: 500 us (2000 Hz), CPU clock: 25000000 Hz
+
+-- Baseline (poll task alone) (10008 periods, 500 us nominal) --
+  worst-case scheduling jitter : 3 cycles (120 ns)
+  response latency (ISR->task) : mean=12 cycles (480 ns)  worst=56 cycles (2240 ns)
+  poll task stack high-water   : 90 words free
+
+-- Under contention (low-priority CPU hog running) (10390 periods, 500 us nominal) --
+  worst-case scheduling jitter : 1 cycles (40 ns)
+  response latency (ISR->task) : mean=10 cycles (400 ns)  worst=14 cycles (560 ns)
+  poll task stack high-water   : 90 words free
+
+=== done ===
+qemu-system-arm: terminating on signal 15 from pid 65201 (<unknown process>)
+
+[exited with code 0]
