@@ -1,0 +1,285 @@
+nohup: ignoring input
+# Week 7 soak session: monitoring PID 1270 on port 5050 every 300s
+# start: 2026-09-28T05:55:21Z
+# columns: elapsed_s epoch_s vmrss_kb threads state alive netstat_line
+SAMPLE 0 | elapsed=0s epoch=1790574921 vmrss_kb=3220 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       24:12 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 1 | elapsed=300s epoch=1790575221 vmrss_kb=3236 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       29:12 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 2 | elapsed=601s epoch=1790575522 vmrss_kb=3256 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       34:13 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 3 | elapsed=901s epoch=1790575822 vmrss_kb=3280 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       39:13 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 4 | elapsed=1201s epoch=1790576122 vmrss_kb=3296 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       44:13 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 5 | elapsed=1501s epoch=1790576422 vmrss_kb=3312 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       49:13 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 6 | elapsed=1801s epoch=1790576722 vmrss_kb=3328 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       54:13 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 7 | elapsed=2102s epoch=1790577023 vmrss_kb=3352 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3       59:14 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 8 | elapsed=2402s epoch=1790577323 vmrss_kb=3368 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:04:14 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 9 | elapsed=2702s epoch=1790577623 vmrss_kb=3384 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:09:14 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 10 | elapsed=3002s epoch=1790577923 vmrss_kb=3408 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:14:14 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 11 | elapsed=3303s epoch=1790578224 vmrss_kb=3424 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:19:14 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 12 | elapsed=3603s epoch=1790578524 vmrss_kb=3440 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:24:15 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 13 | elapsed=3903s epoch=1790578824 vmrss_kb=3456 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:29:15 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 14 | elapsed=4203s epoch=1790579124 vmrss_kb=3480 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.8  0.3    01:34:15 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 15 | elapsed=4503s epoch=1790579424 vmrss_kb=3496 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    01:39:15 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 16 | elapsed=4804s epoch=1790579725 vmrss_kb=3512 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    01:44:16 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 17 | elapsed=5104s epoch=1790580025 vmrss_kb=3536 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    01:49:16 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 18 | elapsed=5404s epoch=1790580325 vmrss_kb=3552 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    01:54:16 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 19 | elapsed=5704s epoch=1790580625 vmrss_kb=3568 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    01:59:16 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 20 | elapsed=6005s epoch=1790580926 vmrss_kb=3592 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:04:16 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 21 | elapsed=6305s epoch=1790581226 vmrss_kb=3608 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:09:17 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 22 | elapsed=6605s epoch=1790581526 vmrss_kb=3624 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:14:17 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 23 | elapsed=6905s epoch=1790581826 vmrss_kb=3640 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:19:17 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 24 | elapsed=7205s epoch=1790582126 vmrss_kb=3664 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:24:17 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 25 | elapsed=7506s epoch=1790582427 vmrss_kb=3680 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:29:18 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 26 | elapsed=7806s epoch=1790582727 vmrss_kb=3696 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:34:18 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 27 | elapsed=8106s epoch=1790583027 vmrss_kb=3720 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:39:18 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 28 | elapsed=8406s epoch=1790583327 vmrss_kb=3736 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:44:18 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 29 | elapsed=8706s epoch=1790583627 vmrss_kb=3752 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.3    02:49:18 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 30 | elapsed=9007s epoch=1790583928 vmrss_kb=3776 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    02:54:19 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 31 | elapsed=9307s epoch=1790584228 vmrss_kb=3792 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    02:59:19 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 32 | elapsed=9607s epoch=1790584528 vmrss_kb=3808 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:04:19 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 33 | elapsed=9907s epoch=1790584828 vmrss_kb=3824 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:09:19 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 34 | elapsed=10208s epoch=1790585129 vmrss_kb=3848 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:14:19 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 35 | elapsed=10508s epoch=1790585429 vmrss_kb=3864 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:19:20 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 36 | elapsed=10808s epoch=1790585729 vmrss_kb=3880 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:24:20 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 37 | elapsed=11108s epoch=1790586029 vmrss_kb=3904 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:29:20 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 38 | elapsed=11408s epoch=1790586329 vmrss_kb=3920 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:34:20 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 39 | elapsed=11709s epoch=1790586630 vmrss_kb=3936 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:39:21 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 40 | elapsed=12009s epoch=1790586930 vmrss_kb=3960 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:44:21 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 41 | elapsed=12309s epoch=1790587230 vmrss_kb=3976 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:49:21 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 42 | elapsed=12609s epoch=1790587530 vmrss_kb=3992 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:54:21 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 43 | elapsed=12910s epoch=1790587831 vmrss_kb=4008 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    03:59:22 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 44 | elapsed=13210s epoch=1790588131 vmrss_kb=4032 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:04:22 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 45 | elapsed=13510s epoch=1790588431 vmrss_kb=4048 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:09:22 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 46 | elapsed=13810s epoch=1790588731 vmrss_kb=4064 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:14:22 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 47 | elapsed=14110s epoch=1790589031 vmrss_kb=4088 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:19:22 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 48 | elapsed=14411s epoch=1790589332 vmrss_kb=4104 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:24:23 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 49 | elapsed=14711s epoch=1790589632 vmrss_kb=4120 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:29:23 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 50 | elapsed=15011s epoch=1790589932 vmrss_kb=4144 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:34:23 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 51 | elapsed=15311s epoch=1790590232 vmrss_kb=4160 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:39:23 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 52 | elapsed=15612s epoch=1790590533 vmrss_kb=4176 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:44:24 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 53 | elapsed=15912s epoch=1790590833 vmrss_kb=4192 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:49:24 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 54 | elapsed=16212s epoch=1790591133 vmrss_kb=4216 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:54:24 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 55 | elapsed=16512s epoch=1790591433 vmrss_kb=4232 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    04:59:24 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 56 | elapsed=16812s epoch=1790591733 vmrss_kb=4248 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:04:24 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 57 | elapsed=17113s epoch=1790592034 vmrss_kb=4272 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:09:25 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 58 | elapsed=17413s epoch=1790592334 vmrss_kb=4288 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:14:25 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 59 | elapsed=17713s epoch=1790592634 vmrss_kb=4304 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:19:25 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 60 | elapsed=18013s epoch=1790592934 vmrss_kb=4328 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:24:25 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 61 | elapsed=18314s epoch=1790593235 vmrss_kb=4344 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:29:26 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 62 | elapsed=18614s epoch=1790593535 vmrss_kb=4360 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:34:26 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 63 | elapsed=18914s epoch=1790593835 vmrss_kb=4376 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:39:26 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 64 | elapsed=19214s epoch=1790594135 vmrss_kb=4400 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:44:26 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 65 | elapsed=19514s epoch=1790594435 vmrss_kb=4416 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:49:26 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 66 | elapsed=19815s epoch=1790594736 vmrss_kb=4432 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:54:27 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 67 | elapsed=20115s epoch=1790595036 vmrss_kb=4456 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    05:59:27 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 68 | elapsed=20415s epoch=1790595336 vmrss_kb=4472 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:04:27 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 69 | elapsed=20715s epoch=1790595636 vmrss_kb=4488 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:09:27 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 70 | elapsed=21016s epoch=1790595937 vmrss_kb=4512 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:14:28 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 71 | elapsed=21316s epoch=1790596237 vmrss_kb=4528 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:19:28 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 72 | elapsed=21616s epoch=1790596537 vmrss_kb=4544 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:24:28 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 73 | elapsed=21916s epoch=1790596837 vmrss_kb=4560 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:29:28 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 74 | elapsed=22216s epoch=1790597137 vmrss_kb=4584 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:34:28 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 75 | elapsed=22517s epoch=1790597438 vmrss_kb=4600 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:39:29 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 76 | elapsed=22817s epoch=1790597738 vmrss_kb=4616 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:44:29 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 77 | elapsed=23117s epoch=1790598038 vmrss_kb=4640 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:49:29 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 78 | elapsed=23417s epoch=1790598338 vmrss_kb=4656 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:54:29 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 79 | elapsed=23718s epoch=1790598639 vmrss_kb=4672 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    06:59:29 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 80 | elapsed=24018s epoch=1790598939 vmrss_kb=4688 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    07:04:30 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 81 | elapsed=24318s epoch=1790599239 vmrss_kb=4712 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.4    07:09:30 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 82 | elapsed=24618s epoch=1790599539 vmrss_kb=4728 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:14:30 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 83 | elapsed=24918s epoch=1790599839 vmrss_kb=4744 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:19:30 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 84 | elapsed=25219s epoch=1790600140 vmrss_kb=4768 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:24:31 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 85 | elapsed=25519s epoch=1790600440 vmrss_kb=4784 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:29:31 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 86 | elapsed=25819s epoch=1790600740 vmrss_kb=4800 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:34:31 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 87 | elapsed=26119s epoch=1790601040 vmrss_kb=4824 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:39:31 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 88 | elapsed=26420s epoch=1790601341 vmrss_kb=4840 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:44:31 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 89 | elapsed=26720s epoch=1790601641 vmrss_kb=4856 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:49:32 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 90 | elapsed=27020s epoch=1790601941 vmrss_kb=4872 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:54:32 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 91 | elapsed=27320s epoch=1790602241 vmrss_kb=4896 threads=5 state="S (sleeping)" alive=1
+  ps:       1270  1258 Sl    0.9  0.5    07:59:32 ./eoir_sensor_system --threaded 28800 5050
+  netstat: no-socket
+SAMPLE 92 | elapsed=27620s epoch=1790602541 vmrss_kb=NA threads=NA state="NA" alive=0
+  ps:      <process not found>
+  netstat: no-socket
+# process 1270 no longer running -- stopping monitor at elapsed=27620s
+# end: 2026-09-28T13:35:42Z

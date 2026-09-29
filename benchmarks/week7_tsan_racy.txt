@@ -1,0 +1,30 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=21071)
+  Write of size 8 at 0x00016aebec80 by thread T2:
+    #0 RacyRingBuffer<int, 16ul>::Push(int) racy_ring_buffer.hpp:42 (race_repro:arm64+0x100002b2c) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #1 void* std::__1::__thread_proxy[abi:v15006]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()>>(void*) thread:301 (race_repro:arm64+0x1000028f8) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+
+  Previous write of size 8 at 0x00016aebec80 by thread T1:
+    #0 RacyRingBuffer<int, 16ul>::Push(int) racy_ring_buffer.hpp:42 (race_repro:arm64+0x100002b2c) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #1 void* std::__1::__thread_proxy[abi:v15006]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()>>(void*) thread:301 (race_repro:arm64+0x1000028f8) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+
+  Location is stack of main thread.
+
+  Thread T2 (tid=138317, running) created by main thread at:
+    #0 pthread_create <null>:128981568 (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x2fd88) (BuildId: 981013a59ee23029b2ed90b76951327532000000200000000100000000000b00)
+    #1 std::__1::thread::thread<void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'(), void>(void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()&&) thread:317 (race_repro:arm64+0x1000027f4) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #2 void std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::__emplace_back_slow_path<void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()>(void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()&&) vector:1579 (race_repro:arm64+0x100002640) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #3 void RunOnce<RacyRingBuffer<int, 16ul>>(bool) race_driver.cpp:31 (race_repro:arm64+0x1000020e0) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #4 main race_driver.cpp:54 (race_repro:arm64+0x100002014) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+
+  Thread T1 (tid=138316, running) created by main thread at:
+    #0 pthread_create <null>:128981568 (libclang_rt.tsan_osx_dynamic.dylib:arm64e+0x2fd88) (BuildId: 981013a59ee23029b2ed90b76951327532000000200000000100000000000b00)
+    #1 std::__1::thread::thread<void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'(), void>(void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()&&) thread:317 (race_repro:arm64+0x1000027f4) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #2 void std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::__emplace_back_slow_path<void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()>(void RunOnce<RacyRingBuffer<int, 16ul>>(bool)::'lambda'()&&) vector:1579 (race_repro:arm64+0x100002640) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #3 void RunOnce<RacyRingBuffer<int, 16ul>>(bool) race_driver.cpp:31 (race_repro:arm64+0x1000020e0) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+    #4 main race_driver.cpp:54 (race_repro:arm64+0x100002014) (BuildId: 8cfa136f9e533410af13ed1480bb3af732000000200000000100000000030d00)
+
+SUMMARY: ThreadSanitizer: data race racy_ring_buffer.hpp:42 in RacyRingBuffer<int, 16ul>::Push(int)
+==================
+[racy] total_pushed()=195485 (expected 200000)
+ThreadSanitizer: reported 1 warnings

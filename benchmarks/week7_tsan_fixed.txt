@@ -1,0 +1,1 @@
+[fixed] total_pushed()=200000 (expected 200000)

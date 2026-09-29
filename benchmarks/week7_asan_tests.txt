@@ -1,0 +1,38 @@
+Running main() from /private/tmp/googletest-20260810-2279-a5yc4x/googletest-1.18.0/googletest/src/gtest_main.cc
+[==========] Running 13 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 7 tests from RingBufferTest
+[ RUN      ] RingBufferTest.EmptyBufferHasZeroSize
+[       OK ] RingBufferTest.EmptyBufferHasZeroSize (0 ms)
+[ RUN      ] RingBufferTest.SingleElementPushPopRoundTrips
+[       OK ] RingBufferTest.SingleElementPushPopRoundTrips (0 ms)
+[ RUN      ] RingBufferTest.FullBufferHoldsExactlyCapacityItems
+[       OK ] RingBufferTest.FullBufferHoldsExactlyCapacityItems (0 ms)
+[ RUN      ] RingBufferTest.WraparoundPreservesFifoOrder
+[       OK ] RingBufferTest.WraparoundPreservesFifoOrder (0 ms)
+[ RUN      ] RingBufferTest.WraparoundUnderConcurrentProducerConsumer
+[       OK ] RingBufferTest.WraparoundUnderConcurrentProducerConsumer (0 ms)
+[ RUN      ] RingBufferTest.OverflowCountIncrementsWhenPushingIntoFullBuffer
+[       OK ] RingBufferTest.OverflowCountIncrementsWhenPushingIntoFullBuffer (0 ms)
+[ RUN      ] RingBufferTest.PopBlocksUntilItemIsAvailable
+[       OK ] RingBufferTest.PopBlocksUntilItemIsAvailable (53 ms)
+[----------] 7 tests from RingBufferTest (54 ms total)
+
+[----------] 6 tests from FrameProcessorTest
+[ RUN      ] FrameProcessorTest.UniformFrameHasEqualMinMaxMean
+[       OK ] FrameProcessorTest.UniformFrameHasEqualMinMaxMean (0 ms)
+[ RUN      ] FrameProcessorTest.ComputesMinMaxMeanAcrossVaryingPixels
+[       OK ] FrameProcessorTest.ComputesMinMaxMeanAcrossVaryingPixels (0 ms)
+[ RUN      ] FrameProcessorTest.HeatSignatureNotDetectedBelowThreshold
+[       OK ] FrameProcessorTest.HeatSignatureNotDetectedBelowThreshold (0 ms)
+[ RUN      ] FrameProcessorTest.HeatSignatureDetectedAtThreshold
+[       OK ] FrameProcessorTest.HeatSignatureDetectedAtThreshold (0 ms)
+[ RUN      ] FrameProcessorTest.InterpretsPixelWordsAsTwosComplement
+[       OK ] FrameProcessorTest.InterpretsPixelWordsAsTwosComplement (0 ms)
+[ RUN      ] FrameProcessorTest.NaiveAndOptimizedAgreeOnResult
+[       OK ] FrameProcessorTest.NaiveAndOptimizedAgreeOnResult (0 ms)
+[----------] 6 tests from FrameProcessorTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 2 test suites ran. (54 ms total)
+[  PASSED  ] 13 tests.

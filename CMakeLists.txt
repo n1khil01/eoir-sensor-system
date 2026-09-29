@@ -34,3 +34,23 @@ unset(CMAKE_REQUIRED_LIBRARIES)
 if(HAVE_LIBATOMIC)
     target_link_libraries(eoir_sensor_system PRIVATE atomic)
 endif()
+
+option(BUILD_TESTING "Build the Week 7 GoogleTest suite" ON)
+if(BUILD_TESTING)
+    enable_testing()
+    find_package(GTest REQUIRED)
+
+    add_executable(eoir_sensor_tests
+        tests/ring_buffer_test.cpp
+        tests/frame_processor_test.cpp
+        src/frame_processor.cpp
+    )
+    target_include_directories(eoir_sensor_tests PRIVATE include)
+    target_link_libraries(eoir_sensor_tests PRIVATE GTest::gtest GTest::gtest_main Threads::Threads)
+    if(HAVE_LIBATOMIC)
+        target_link_libraries(eoir_sensor_tests PRIVATE atomic)
+    endif()
+
+    include(GoogleTest)
+    gtest_discover_tests(eoir_sensor_tests)
+endif()
